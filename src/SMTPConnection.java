@@ -56,7 +56,7 @@ import java.util.*;
         public void close() {
             isConnected = false;
             try {
-                sendCommand( /* Fill in */ );
+                sendCommand( /*Fill in */ );
                 // connection.close();
             } catch (IOException e) {
                 System.out.println("Unable to close connection: " + e);
