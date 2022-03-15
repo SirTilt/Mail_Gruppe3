@@ -5,7 +5,7 @@ import java.util.*;
 /* $Id: Envelope.java,v 1.8 1999/09/06 16:43:20 kangasha Exp $ */
 
 /**
- * SMTP envelope for one mail message.
+ * SMTP envelope for one mail message.g
  *
  * @author Jussi Kangasharju
  */

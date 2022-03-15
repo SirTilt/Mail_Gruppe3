@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 
     /**
-     * Open an SMTP connection to a mailserver and send one mail.
+     * Open an SMTP connection to a mailserver and send one mail.g
      *
      */
     public class SMTPConnection {
