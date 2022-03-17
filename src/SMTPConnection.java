@@ -23,9 +23,9 @@ import java.util.*;
         /* Create an SMTPConnection object. Create the socket and the
            associated streams. Initialize SMTP connection. */
         public SMTPConnection(Envelope envelope) throws IOException {
-            // connection = /* Fill in */;
-            fromServer = /* Fill in */;
-            toServer =   /* Fill in */;
+            connection = new Socket(envelope.DestAddr,SMTP_PORT);
+            fromServer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            toServer =  new DataOutputStream(connection.getOutputStream());
 
             /* Fill in */
 	/* Read a line from server and check that the reply code is 220.
