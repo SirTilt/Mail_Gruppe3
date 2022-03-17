@@ -10,6 +10,7 @@ import java.awt.event.*;
  *
  * @author Jussi Kangasharju
  */
+@SuppressWarnings("serial")
 public class MailClient extends Frame {
     /* The stuff for the GUI. */
     private Button btSend = new Button("Send");
@@ -21,6 +22,8 @@ public class MailClient extends Frame {
     private TextField fromField = new TextField("", 40);
     private Label toLabel = new Label("To:");
     private TextField toField = new TextField("", 40);
+    private Label ccLabel = new Label("Cc:");
+    private TextField ccField = new TextField("", 40);
     private Label subjectLabel = new Label("Subject:");
     private TextField subjectField = new TextField("", 40);
     private Label messageLabel = new Label("Message:");
@@ -30,14 +33,16 @@ public class MailClient extends Frame {
      * Create a new MailClient window with fields for entering all
      * the relevant information (From, To, Subject, and message).
      */
+    @SuppressWarnings("deprecation")
     public MailClient() {
         super("Java Mailclient");
 
-	/* Create panels for holding the fields. To make it look nice,
-	   create an extra panel for holding all the child panels. */
+		/* Create panels for holding the fields. To make it look nice,
+		   create an extra panel for holding all the child panels. */
         Panel serverPanel = new Panel(new BorderLayout());
         Panel fromPanel = new Panel(new BorderLayout());
         Panel toPanel = new Panel(new BorderLayout());
+        Panel ccPanel = new Panel(new BorderLayout());
         Panel subjectPanel = new Panel(new BorderLayout());
         Panel messagePanel = new Panel(new BorderLayout());
         serverPanel.add(serverLabel, BorderLayout.WEST);
@@ -46,6 +51,8 @@ public class MailClient extends Frame {
         fromPanel.add(fromField, BorderLayout.CENTER);
         toPanel.add(toLabel, BorderLayout.WEST);
         toPanel.add(toField, BorderLayout.CENTER);
+        ccPanel.add(ccLabel, BorderLayout.WEST);
+        ccPanel.add(ccField, BorderLayout.CENTER);
         subjectPanel.add(subjectLabel, BorderLayout.WEST);
         subjectPanel.add(subjectField, BorderLayout.CENTER);
         messagePanel.add(messageLabel, BorderLayout.NORTH);
@@ -54,10 +61,11 @@ public class MailClient extends Frame {
         fieldPanel.add(serverPanel);
         fieldPanel.add(fromPanel);
         fieldPanel.add(toPanel);
+        fieldPanel.add(ccPanel);
         fieldPanel.add(subjectPanel);
 
-	/* Create a panel for the buttons and add listeners to the
-	   buttons. */
+		/* Create a panel for the buttons and add listeners to the
+		   buttons. */
         Panel buttonPanel = new Panel(new GridLayout(1, 0));
         btSend.addActionListener(new SendListener());
         btClear.addActionListener(new ClearListener());
@@ -80,6 +88,7 @@ public class MailClient extends Frame {
 
     /* Handler for the Send-button. */
     class SendListener implements ActionListener {
+
         public void actionPerformed(ActionEvent event) {
             System.out.println("Sending mail");
 
@@ -99,30 +108,37 @@ public class MailClient extends Frame {
                 return;
             }
 
+
             /* Create the message */
             Message mailMessage = new Message(fromField.getText(),
                     toField.getText(),
+                    ccField.getText(),
                     subjectField.getText(),
                     messageText.getText());
 
-	    /* Check that the message is valid, i.e., sender and
-	       recipient addresses look ok. */
+		    /* Check that the message is valid, i.e., sender and
+		       recipient addresses look ok. */
             if(!mailMessage.isValid()) {
                 return;
             }
 
-	    /* Create the envelope, open the connection and try to send
-	       the message. */
+		    /* Create the envelope, open the connection and try to send
+		       the message. */
+            Envelope envelope;
             try {
-                Envelope envelope = new Envelope(mailMessage,
+                envelope = new Envelope(mailMessage,
                         serverField.getText());
             } catch (UnknownHostException e) {
                 /* If there is an error, do not go further */
                 return;
             }
             try {
+                System.out.println("Create SMTP object...");
                 SMTPConnection connection = new SMTPConnection(envelope);
+                System.out.println("SMTP object created... connection OK");
+                System.out.println("Sending Envelope....");
                 connection.send(envelope);
+                System.out.println(":envelope sent... closing connection");
                 connection.close();
             } catch (IOException error) {
                 System.out.println("Sending failed: " + error);
