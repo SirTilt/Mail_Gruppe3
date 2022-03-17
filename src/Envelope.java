@@ -9,12 +9,14 @@ import java.util.*;
  *
  * @author Jussi Kangasharju
  */
+@SuppressWarnings("unused")
+
 public class Envelope {
     /* SMTP-sender of the message (in this case, contents of From-header. */
     public String Sender;
 
     /* SMTP-recipient, or contents of To-header. */
-    public String Recipient;
+    public ArrayList<String> Recipient;
 
     /* Target MX-host */
     public String DestHost;
@@ -27,9 +29,18 @@ public class Envelope {
     public Envelope(Message message, String localServer) throws UnknownHostException {
         /* Get sender and recipient. */
         Sender = message.getFrom();
-        Recipient = message.getTo();
+        Recipient = new ArrayList<String>();
 
-	/* Get message. We must escape the message to make sure that
+
+        for(String email: message.getTo()){
+            Recipient.add(email);
+        }
+        for(String email: message.getCc()){
+            Recipient.add(email);
+        }
+
+
+		/* Get message. We must escape the message to make sure that
 	   there are no single periods on a line. This would mess up
 	   sending the mail. */
         Message = escapeMessage(message);
@@ -68,7 +79,11 @@ public class Envelope {
     /* For printing the envelope. Only for debug. */
     public String toString() {
         String res = "Sender: " + Sender + '\n';
-        res += "Recipient: " + Recipient + '\n';
+
+        for(String email: Recipient ){
+            res += "Recipient: " + email + '\n';
+        }
+
         res += "MX-host: " + DestHost + ", address: " + DestAddr + '\n';
         res += "Message:" + '\n';
         res += Message.toString();
